@@ -50,25 +50,25 @@ with gr.Blocks(theme=set_theme, analytics_enabled=False) as demo:
                     txt = gr.Textbox(show_label=False, placeholder="Input question here.").style(container=False)
                 with gr.Column(scale=1):
                     with gr.Row():
-                        resetBtn = gr.Button("重置", variant="secondary")
-                        submitBtn = gr.Button("提交", variant="primary")
+                        resetBtn = gr.Button("Reset", variant="secondary")
+                        submitBtn = gr.Button("Submit", variant="primary")
             with gr.Row():
                 from check_proxy import check_proxy
-                statusDisplay = gr.Markdown(f"Tip: 按Enter提交, 按Shift+Enter换行. \nNetwork: {check_proxy(proxies)}\nModel: {LLM_MODEL}")
+                statusDisplay = gr.Markdown(f"Tip: Press Enter and Submit, 按Shift+Enter换行. \nNetwork: {check_proxy(proxies)}\nModel: {LLM_MODEL}")
             with gr.Row():
                 for k in functional:
                     variant = functional[k]["Color"] if "Color" in functional[k] else "secondary"
                     functional[k]["Button"] = gr.Button(k, variant=variant)
             with gr.Row():
-                gr.Markdown("以下部分实验性功能需从input框读取路径.")
+                gr.Markdown("Some of the following experimental functions need to read the path from the input box.")
             with gr.Row():
                 for k in crazy_functional:
                     variant = crazy_functional[k]["Color"] if "Color" in crazy_functional[k] else "secondary"
                     crazy_functional[k]["Button"] = gr.Button(k, variant=variant)
             with gr.Row():
-                gr.Markdown("上传本地文件供上面的实验性功能调用.")
+                gr.Markdown("Upload local files for the above experimental function calls.")
             with gr.Row():
-                file_upload = gr.Files(label='任何文件,但推荐上传压缩文件(zip, tar)', file_count="multiple")
+                file_upload = gr.Files(label='Any file, but it is recommended to upload compressed files(zip, tar)', file_count="multiple")
             system_prompt = gr.Textbox(show_label=True, placeholder=f"System Prompt", label="System prompt", value=initial_prompt).style(container=True)
             with gr.Accordion("arguments", open=False):
                 top_p = gr.Slider(minimum=-0, maximum=1.0, value=1.0, step=0.01,interactive=True, label="Top-p (nucleus sampling)",)
@@ -81,7 +81,7 @@ with gr.Blocks(theme=set_theme, analytics_enabled=False) as demo:
     txt.submit(**empty_txt_args)
     submitBtn.click(**predict_args)
     submitBtn.click(**empty_txt_args)
-    resetBtn.click(lambda: ([], [], "已重置"), None, [chatbot, history, statusDisplay])
+    resetBtn.click(lambda: ([], [], "Reset"), None, [chatbot, history, statusDisplay])
     for k in functional:
         functional[k]["Button"].click(predict,
             [txt, top_p, temperature, chatbot, history, system_prompt, gr.State(True), gr.State(k)], [chatbot, history, statusDisplay], show_progress=True)

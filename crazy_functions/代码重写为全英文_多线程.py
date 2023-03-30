@@ -20,9 +20,9 @@ def 全项目切换英文(txt, top_p, temperature, chatbot, history, sys_prompt,
         # if 'test_project' in fp: continue
         with open(fp, 'r', encoding='utf-8') as f:
             file_content = f.read()
-        i_say_show_user =f'[{index}/{len(file_manifest)}] 接下来请将以下代码中包含的所有中文转化为英文，只输出代码: {os.path.abspath(fp)}'
+        i_say_show_user =f'[{index}/{len(file_manifest)}] Next, please convert all the Chinese contained in the following code to English and output the code only: {os.path.abspath(fp)}'
         i_say_show_user_buffer.append(i_say_show_user)
-        chatbot.append((i_say_show_user, "[Local Message] 等待多线程操作，中间过程不予显示."))
+        chatbot.append((i_say_show_user, "[Local Message] Waiting for multi-threaded operation, the intermediate process is not displayed."))
         yield chatbot, history, '正常'
 
     # 任务函数
@@ -30,7 +30,7 @@ def 全项目切换英文(txt, top_p, temperature, chatbot, history, sys_prompt,
     def thread_worker(fp,index):
         with open(fp, 'r', encoding='utf-8') as f:
             file_content = f.read()
-        i_say = f'接下来请将以下代码中包含的所有中文转化为英文，只输出代码，文件名是{fp}，文件代码是 ```{file_content}```'
+        i_say = f'Next, please convert all the Chinese contained in the following code to English and output the code only，文件名是{fp}，文件代码是 ```{file_content}```'
         # ** gpt request **
         gpt_say = predict_no_ui_long_connection(inputs=i_say, top_p=top_p, temperature=temperature, history=history, sys_prompt=sys_prompt)
         mutable_return[index] = gpt_say
@@ -52,7 +52,7 @@ def 全项目切换英文(txt, top_p, temperature, chatbot, history, sys_prompt,
         stat = ['执行中' if alive else '已完成' for alive in th_alive]
         stat_str = '|'.join(stat)
         cnt += 1
-        chatbot[-1] = (chatbot[-1][0], f'多线程操作已经开始，完成情况: {stat_str}' + ''.join(['.']*(cnt%4)))
+        chatbot[-1] = (chatbot[-1][0], f'Multi-threaded operation has started and completed: {stat_str}' + ''.join(['.']*(cnt%4)))
         yield chatbot, history, '正常'
 
     # 把结果写入文件
@@ -71,5 +71,5 @@ def 全项目切换英文(txt, top_p, temperature, chatbot, history, sys_prompt,
 
     # 备份一个文件
     res = write_results_to_file(history)
-    chatbot.append(("生成一份任务执行报告", res))
+    chatbot.append(("Generate a task execution report", res))
     yield chatbot, history, '正常'
